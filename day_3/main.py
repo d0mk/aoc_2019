@@ -3,6 +3,7 @@ class WireManager:
         self.wire_paths = load_data() if wire_paths is None else wire_paths
         self.num_of_wires = len(self.wire_paths)
         self.line_segments = tuple([] for _ in range(self.num_of_wires))
+        self.coords_of_intersection = []
         self.direction = {
             'U': (0, 1),
             'D': (0, -1),
@@ -20,7 +21,7 @@ class WireManager:
         def calculate_manhattan_distance(x, y):
             return abs(x) + abs(y)
 
-        # loop used for extracting the coordinates of wire corners
+        # creating the coordinates of wire corners
         for i, wire in enumerate(self.wire_paths):
             corner_coords[i].append((0, 0))
             for dir_code in wire.split(','):
@@ -30,8 +31,9 @@ class WireManager:
                 next_y += y
                 corner_coords[i].append((next_x, next_y))
 
-        # loop for creating line segments from corners
-        for i, corners in enumerate(corner_coords):
+        # creating line segments from corners
+        for i in range(len(corner_coords)):
+            LineSegment.id = 0
             for j in range(len(corner_coords[i]) - 1):
                 self.line_segments[i].append(LineSegment(corner_coords[i][j], corner_coords[i][j + 1]))
             
@@ -41,19 +43,53 @@ class WireManager:
             for line_2 in self.line_segments[1]:
                 x, y = line_1.check_for_intersection(line_2)
                 if (x, y) != (0, 0):
-                    coords_of_intersection.append((x, y))
+                    self.coords_of_intersection.append((x, y, line_1, line_2))
 
         # {intersection point : manhattan distance} pairs
-        result = {p : calculate_manhattan_distance(*p) for p in coords_of_intersection}
+        result = {p : calculate_manhattan_distance(*p[:2]) for p in self.coords_of_intersection}
 
         print(f'Distance to closest intersection: {min(result.values())}')
 
 
+    def minimum_steps(self):
+        def backtrack_wire(p, wire):
+            if p == 0:
+                return self.line_segments[wire][p].length
+            else:
+                return self.line_segments[wire][p].length + backtrack_wire(p - 1, wire)
+
+        def partial_segment(p):
+            x, y, wire_1, wire_2 = p
+            prev_seg_1 = self.line_segments[0][wire_1.id - 1]
+            prev_seg_2 = self.line_segments[1][wire_2.id - 1]
+            part_sum_1 = abs(x - prev_seg_1.p2[0]) + abs(y - prev_seg_1.p2[1])
+            part_sum_2 = abs(x - prev_seg_2.p2[0]) + abs(y - prev_seg_2.p2[1])
+            return part_sum_1 + part_sum_2
+
+        combined_steps = []
+
+        for p in self.coords_of_intersection:
+            x, y, wire_1, wire_2 = p
+            line_index = wire_1.id
+            steps_1 = backtrack_wire(line_index - 1, 0)
+            line_index = wire_2.id
+            steps_2 = backtrack_wire(line_index - 1, 1)
+            remaining_sum = partial_segment(p)
+            combined_steps.append(steps_1 + steps_2 + remaining_sum)
+
+        print(f'Minimum steps: {min(combined_steps)}')
+
+
+
 class LineSegment:
+    id = 0
+
     def __init__(self, p1, p2):
         self.p1 = p1
         self.p2 = p2
         self.length = self.get_segment_length()
+        self.id = LineSegment.id
+        LineSegment.id += 1
 
     def get_segment_length(self):
         x1, y1 = self.p1
@@ -91,3 +127,4 @@ def load_data():
 if __name__ == '__main__':
     wm = WireManager()
     wm.find_closest_intersection()
+    wm.minimum_steps()
