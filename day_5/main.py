@@ -9,7 +9,14 @@ class IntCodeComputer_v2:
         self.running = True
         self.ip = 0 # ip - instruction pointer
         self.operations = {
-
+            1 : lambda x, y, z : self.add(x, y, z),
+            2 : lambda x, y, z : self.multiply(x, y, z),
+            3 : lambda x, y, z : self.input_code(x),
+            4 : lambda x, y, z : self.output_code(x),
+            5 : lambda x, y, z : self.jump_if_true(x, y),
+            6 : lambda x, y, z : self.jump_if_false(x, y),
+            7 : lambda x, y, z : self.less_than(x, y, z),
+            8 : lambda x, y, z : self.equals(x, y, z)
         }
 
     def add(self, i_1, i_2, out):
@@ -42,7 +49,7 @@ class IntCodeComputer_v2:
 
     def input_code(self, i):
         # hardcoding ID instead of taking input
-        self.data[i] = 5
+        self.data[i] = 1
         # self.data[i] = int(input('Enter ID (1 for part 1, 5 for part 2): '))
         self.ip += 2
 
@@ -73,24 +80,7 @@ class IntCodeComputer_v2:
             i_2 = i + 2 if B == 1 else self.data[i + 2]
             out = self.data[i + 3]
 
-            if opcode == 1:
-                self.add(i_1, i_2, out)
-            elif opcode == 2:
-                self.multiply(i_1, i_2, out)
-            elif opcode == 3:
-                self.input_code(self.data[i + 1])
-            elif opcode == 4:
-                self.output_code(self.data[i + 1])
-            elif opcode == 5:
-                self.jump_if_true(i_1, i_2)
-            elif opcode == 6:
-                self.jump_if_false(i_1, i_2)
-            elif opcode == 7:
-                self.less_than(i_1, i_2, out)
-            elif opcode == 8:
-                self.equals(i_1, i_2, out)
-            else:
-                return print(f'Invalid code: {opcode}')
+            self.operations[opcode](i_1, i_2, out)
 
             
 if __name__ == '__main__':
