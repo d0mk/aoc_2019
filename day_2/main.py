@@ -4,10 +4,10 @@ def load_data():
 
 
 class IntCodeComputer:
-    def __init__(self, noun, verb, data=None):
+    def __init__(self, noun_verb=None, data=None):
         self.data = load_data() if data is None else data
-        self.data[1] = noun
-        self.data[2] = verb
+        if noun_verb:
+            self.data[1], self.data[2] = noun_verb
         self.running = True
 
     def add(self, in_1, in_2, out):
@@ -47,7 +47,7 @@ class InitialStateFinder:
     def start(self):
         for noun in range(100):
             for verb in range(100):
-                int_code = IntCodeComputer(noun, verb, self.data[:])
+                int_code = IntCodeComputer((noun, verb), self.data[:])
                 int_code.start()
 
                 if int_code.result() == self.match:
@@ -57,7 +57,7 @@ class InitialStateFinder:
 
 if __name__ == '__main__':
     # part 1
-    int_code = IntCodeComputer(12, 2)
+    int_code = IntCodeComputer((12, 2))
     int_code.start()
     print(f'Part 1 result code: {int_code.result()}')
 
