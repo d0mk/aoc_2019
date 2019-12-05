@@ -3,7 +3,7 @@ def load_data():
         return [int(n) for n in data.readline().split(',')]
 
 
-class CodeProcessor:
+class IntCodeComputer:
     def __init__(self, noun, verb, data=None):
         self.data = load_data() if data is None else data
         self.data[1] = noun
@@ -47,19 +47,19 @@ class InitialStateFinder:
     def start(self):
         for noun in range(100):
             for verb in range(100):
-                code_proc = CodeProcessor(noun, verb, self.data[:])
-                code_proc.start()
+                int_code = IntCodeComputer(noun, verb, self.data[:])
+                int_code.start()
 
-                if code_proc.result() == self.match:
+                if int_code.result() == self.match:
                     print(f'Part 2 result code: {100 * noun + verb}')
                     return
 
 
 if __name__ == '__main__':
     # part 1
-    code_proc = CodeProcessor(12, 2)
-    code_proc.start()
-    print(f'Part 1 result code: {code_proc.result()}')
+    int_code = IntCodeComputer(12, 2)
+    int_code.start()
+    print(f'Part 1 result code: {int_code.result()}')
 
     # part 2
     finder = InitialStateFinder(19690720)
