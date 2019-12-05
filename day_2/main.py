@@ -10,11 +10,11 @@ class IntCodeComputer:
             self.data[1], self.data[2] = noun_verb
         self.running = True
 
-    def add(self, in_1, in_2, out):
-        self.data[out] = self.data[in_1] + self.data[in_2]
+    def add(self, i_1, i_2, out):
+        self.data[out] = self.data[i_1] + self.data[i_2]
 
-    def multiply(self, in_1, in_2, out):
-        self.data[out] = self.data[in_1] * self.data[in_2]
+    def multiply(self, i_1, i_2, out):
+        self.data[out] = self.data[i_1] * self.data[i_2]
 
     def stop(self):
         self.running = False
@@ -25,14 +25,14 @@ class IntCodeComputer:
     def start(self):
         i = 0
         while self.running:
-            in_1 = self.data[i + 1]
-            in_2 = self.data[i + 2]
+            i_1 = self.data[i + 1]
+            i_2 = self.data[i + 2]
             out = self.data[i + 3]
 
             if self.data[i] == 1:
-                self.add(in_1, in_2, out)
+                self.add(i_1, i_2, out)
             elif self.data[i] == 2:
-                self.multiply(in_1, in_2, out)
+                self.multiply(i_1, i_2, out)
             elif self.data[i] == 99:
                 self.stop()
 
