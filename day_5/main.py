@@ -16,7 +16,8 @@ class IntCodeComputer_v2:
             5 : lambda x, y, z : self.jump_if_true(x, y),
             6 : lambda x, y, z : self.jump_if_false(x, y),
             7 : lambda x, y, z : self.less_than(x, y, z),
-            8 : lambda x, y, z : self.equals(x, y, z)
+            8 : lambda x, y, z : self.equals(x, y, z),
+            99 : lambda x, y, z : self.stop()
         }
 
     def add(self, i_1, i_2, out):
@@ -71,14 +72,13 @@ class IntCodeComputer_v2:
     def start(self):
         while self.running:
             i = self.ip
-
+            
             A, B, C, opcode = self.parse_code(self.data[i])
+            L = len(self.data)
 
-            if opcode == 99: break
-
-            i_1 = i + 1 if C == 1 else self.data[i + 1]
-            i_2 = i + 2 if B == 1 else self.data[i + 2]
-            out = self.data[i + 3]
+            i_1 = i + 1 if C == 1 else self.data[(i + 1) % L]
+            i_2 = i + 2 if B == 1 else self.data[(i + 2) % L]
+            out = self.data[(i + 3) % L]
 
             self.operations[opcode](i_1, i_2, out)
 
