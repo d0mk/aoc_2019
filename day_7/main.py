@@ -1,5 +1,10 @@
-from day_5.main import IntCodeComputer_v2
 from itertools import permutations
+import os.path
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from day_5.main import IntCodeComputer_v2
 
 
 def load_data():
@@ -15,8 +20,8 @@ class IntComputer_v3(IntCodeComputer_v2):
         self.output = None
         self.stdin = (n for n in stdin)
 
-    def input_code(self, i, value):
-        self.data[i] = value
+    def input_code(self, i):
+        self.data[i] = next(self.stdin)
         self.ip += 2
 
     def output_code(self, i):
@@ -34,18 +39,19 @@ def main():
     max_thrust = 0
 
     def find_max_thrust(input_signal, phases):
-        if (phase := next(phase)) is not None:
-            pass
-        else:
-            return IntComputer_v3().start()
-
+        try:
+            phase = next(phases)
+            amp_out = IntComputer_v3((phase, input_signal)).start()
+            return find_max_thrust(amp_out, phases)
+        except StopIteration:
+            return input_signal
 
     for phase_order in phase_orders:
-        output = find_max_thrust(0, phase_order)
+        output = find_max_thrust(0, iter(phase_order))
         if output > max_thrust:
             max_thrust = output
 
-    print(max_thrust)
+    print(f'Max thrust: {max_thrust}')
 
 
 if __name__ == '__main__':
