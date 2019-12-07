@@ -49,9 +49,7 @@ class IntCodeComputer_v2:
         self.ip += 4
 
     def input_code(self, i):
-        # hardcoding ID instead of taking input
         self.data[i] = 1
-        # self.data[i] = int(input('Enter ID (1 for part 1, 5 for part 2): '))
         self.ip += 2
 
     def output_code(self, i):
