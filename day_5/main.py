@@ -1,11 +1,11 @@
-def load_data():
-    with open('day_5/input.txt') as data:
+def load_data(filepath):
+    with open(filepath) as data:
         return [int(n) for n in data.readline().split(',')]
 
 
 class IntCodeComputer_v2:
     def __init__(self, data=None):
-        self.data = load_data() if data is None else data
+        self.data = load_data('day_5/input.txt') if data is None else data
         self.running = True
         self.ip = 0 # ip - instruction pointer
         self.operations = {

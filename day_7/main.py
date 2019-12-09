@@ -4,19 +4,14 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from day_5.main import IntCodeComputer_v2
+from day_5.main import IntCodeComputer_v2, load_data
 
 
-def load_data():
-    with open('day_7/input.txt') as data:
-        return [int(n) for n in data.readline().split(',')]
-
-
-class IntComputer_v3(IntCodeComputer_v2):
-    data = load_data()
+class IntCodeComputer_v3(IntCodeComputer_v2):
+    data = load_data('day_7/input.txt')
 
     def __init__(self, input_data=None):
-        super().__init__(IntComputer_v3.data[:])
+        super().__init__(IntCodeComputer_v3.data[:])
         self.output = None
         self.input_data = input_data if type(input_data) == list else None
 
@@ -48,7 +43,7 @@ def part_1():
 
     def find_max_thrust(input_signal, phases):
         try:
-            amp_out = IntComputer_v3([next(phases), input_signal]).start()
+            amp_out = IntCodeComputer_v3([next(phases), input_signal]).start()
             return find_max_thrust(amp_out, phases)
         except StopIteration:
             return input_signal
@@ -69,7 +64,7 @@ def part_2():
 
     for phase_order in phase_orders:
         # setting phases on every amp
-        amps = [IntComputer_v3([phase]) for phase in phase_order]
+        amps = [IntCodeComputer_v3([phase]) for phase in phase_order]
         amps_cycled = cycle(amps)
 
         amp_input = 0
