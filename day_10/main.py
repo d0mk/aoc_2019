@@ -74,12 +74,12 @@ def part_2(origin):
 
 
     objects = compress(objects)
-    cycled_angles = itertools.cycle(objects)
+    cycled_objects = itertools.cycle(objects)
     vaporized = 0
     last = None
 
     while vaporized < 199:
-        group = next(cycled_angles)
+        group = next(cycled_objects)
 
         if len(group) == 0:
             continue
